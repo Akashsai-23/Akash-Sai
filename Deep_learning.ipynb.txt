@@ -1,0 +1,299 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Deep learning.ipynb",
+      "provenance": [],
+      "collapsed_sections": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "iKnWuqObXsTA",
+        "outputId": "85f7da8d-c05c-4b0d-d83b-29f6b739f309"
+      },
+      "source": [
+        "pip install keras"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Requirement already satisfied: keras in /usr/local/lib/python3.7/dist-packages (2.4.3)\n",
+            "Requirement already satisfied: h5py in /usr/local/lib/python3.7/dist-packages (from keras) (2.10.0)\n",
+            "Requirement already satisfied: pyyaml in /usr/local/lib/python3.7/dist-packages (from keras) (3.13)\n",
+            "Requirement already satisfied: numpy>=1.9.1 in /usr/local/lib/python3.7/dist-packages (from keras) (1.19.5)\n",
+            "Requirement already satisfied: scipy>=0.14 in /usr/local/lib/python3.7/dist-packages (from keras) (1.4.1)\n",
+            "Requirement already satisfied: six in /usr/local/lib/python3.7/dist-packages (from h5py->keras) (1.15.0)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "bk6Np7vXYBRj"
+      },
+      "source": [
+        "from keras.datasets import mnist"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KSQdCWX9YjMe",
+        "outputId": "682c339f-7a25-49d8-b086-81a095fe52d2"
+      },
+      "source": [
+        "data = mnist.load_data()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz\n",
+            "11493376/11490434 [==============================] - 0s 0us/step\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Iij834uRY1c6"
+      },
+      "source": [
+        "((x_train,y_train)),((x_test,y_test)) = data"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "cZ4npr9TZONW"
+      },
+      "source": [
+        "x_train = x_train.reshape((x_train.shape[0],28*28)).astype('float32')\n",
+        "x_test = x_test.reshape((x_test.shape[0],28*28)).astype('float32')"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "6qMTfCt1Z2dO"
+      },
+      "source": [
+        "x_train = x_train/255\n",
+        "x_test = x_test/ 255"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LKyVdM9xaDE3",
+        "outputId": "d4d35da6-16be-4ed3-e4b7-97f4dcd654eb"
+      },
+      "source": [
+        "from keras.utils import np_utils\n",
+        "print(y_test.shape)\n",
+        "y_train = np_utils.to_categorical(y_train)\n",
+        "y_test = np_utils.to_categorical(y_test)\n",
+        "num_classes = y_test.shape[1]\n",
+        "print(y_test.shape)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "(10000,)\n",
+            "(10000, 10)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "FXwFD1Oaa7_I"
+      },
+      "source": [
+        "from keras.models import Sequential \n",
+        "from keras.layers import Dense"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "trrOjex2bQ4g"
+      },
+      "source": [
+        "model = Sequential()\n",
+        "model.add(Dense(32, input_dim = 28*28, activation='relu'))\n",
+        "model.add(Dense(64, activation='relu'))\n",
+        "model.add(Dense(10, activation='softmax'))"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "JWLao7_NcGKe"
+      },
+      "source": [
+        "model.compile(loss=\"categorical_crossentropy\",optimizer=\"adam\",metrics=[\"accuracy\"])"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KYhgoqIpcnmi",
+        "outputId": "0bd9afc6-58e2-46cb-d67a-5745d5017f44"
+      },
+      "source": [
+        "model.summary()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Model: \"sequential_1\"\n",
+            "_________________________________________________________________\n",
+            "Layer (type)                 Output Shape              Param #   \n",
+            "=================================================================\n",
+            "dense_3 (Dense)              (None, 32)                25120     \n",
+            "_________________________________________________________________\n",
+            "dense_4 (Dense)              (None, 64)                2112      \n",
+            "_________________________________________________________________\n",
+            "dense_5 (Dense)              (None, 10)                650       \n",
+            "=================================================================\n",
+            "Total params: 27,882\n",
+            "Trainable params: 27,882\n",
+            "Non-trainable params: 0\n",
+            "_________________________________________________________________\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RRWqyMFWc2Fp",
+        "outputId": "ca7c83ce-fbf3-4088-e01c-4ca5a562b9c4"
+      },
+      "source": [
+        "model.fit(x_train,y_train,epochs=10,batch_size=100)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Epoch 1/10\n",
+            "600/600 [==============================] - 2s 2ms/step - loss: 0.7508 - accuracy: 0.7827\n",
+            "Epoch 2/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.1973 - accuracy: 0.9413\n",
+            "Epoch 3/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.1554 - accuracy: 0.9548\n",
+            "Epoch 4/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.1286 - accuracy: 0.9617\n",
+            "Epoch 5/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.1104 - accuracy: 0.9674\n",
+            "Epoch 6/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.0966 - accuracy: 0.9717\n",
+            "Epoch 7/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.0889 - accuracy: 0.9731\n",
+            "Epoch 8/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.0787 - accuracy: 0.9757\n",
+            "Epoch 9/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.0751 - accuracy: 0.9771\n",
+            "Epoch 10/10\n",
+            "600/600 [==============================] - 1s 2ms/step - loss: 0.0692 - accuracy: 0.9787\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<tensorflow.python.keras.callbacks.History at 0x7f795fa12d10>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 25
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xcJeqiKhdQsC",
+        "outputId": "e1f58603-e806-472a-9eb2-ee451559862b"
+      },
+      "source": [
+        "scores = model.evaluate(x_test,y_test)\n",
+        "print(scores)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "313/313 [==============================] - 0s 1ms/step - loss: 0.1037 - accuracy: 0.9686\n",
+            "[0.10374142974615097, 0.9685999751091003]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    }
+  ]
+}
